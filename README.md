@@ -48,8 +48,7 @@ UserRequest
 
 - belongs_to user
 - action - integer / enum
-- requested_on - DateTime
-- ip_address - string -> could be potentially useful in the future (maybe another PBI/task)
+- created_at will be fine for the date field
 
 === if time get to below
 

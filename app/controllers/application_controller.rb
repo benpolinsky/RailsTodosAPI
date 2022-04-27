@@ -2,32 +2,27 @@ class ApplicationController < ActionController::API
   include Response
   include ExceptionHandler
 
-  before_action :authorize_request, :track_request
+  before_action :authorize_request, :ensure_user_below_rate_limit
   attr_reader :current_user
 
   private
 
-  # @@requests = {}
+  READ_METHODS = ['GET']
+  WRITE_METHODS = %w[PUT POST DELETE]
 
   def authorize_request
     @current_user = AuthorizeApiRequest.new(request.headers).call[:user]
   end
 
-  def track_request
-    # return if !@current_user
-    # current_time = DateTime.now
+  def ensure_user_below_rate_limit
+    raise(ExceptionHandler::OverRateLimit, Message.over_rate_limit) if @current_user.over_rapid_request_limit?
 
-    # if @@requests.key?(@current_user)
-    #   if (@@requests[@current_user]) > 3 && (current_time > @@requests[@current_user].time_of_first_request + 1.second)
-    #     p 'Would add logging information'
-    #     # would block actual request
-    #     return
-    #   end
+    raise(ExceptionHandler::OverRateLimit, Message.over_rate_limit) if @current_user.over_read_request_limit?
 
-    #   @@requests[@current_user] += { time_of_first_request: current_time,
-    #                                  number_of_requests: @@requests[@current_user].number_of_requests + 1 }
-    # else
-    #   @@requests[@current_user] = { time_of_first_request: current_time, number_of_requests: 1 }
-    # end
+    raise(ExceptionHandler::OverRateLimit, Message.over_rate_limit) if @current_user.over_write_request_limit?
+
+    action = READ_METHODS.include?(request.method) ? 1 : 2
+
+    @current_user.user_requests.create(action: action)
   end
 end

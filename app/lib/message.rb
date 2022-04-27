@@ -30,4 +30,8 @@ class Message
   def self.expired_token
     'Sorry, your token has expired. Please login to continue.'
   end
+
+  def self.over_rate_limit
+    'Sorry, your user has breached the rate limit.'
+  end
 end

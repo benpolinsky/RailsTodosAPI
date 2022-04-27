@@ -7,6 +7,8 @@ module ExceptionHandler
 
   class InvalidToken < StandardError; end
 
+  class OverRateLimit < StandardError; end
+
   included do
     rescue_from ActiveRecord::RecordNotFound do |e|
       json_response({ message: e.message }, :not_found)
@@ -28,5 +30,8 @@ module ExceptionHandler
       json_response({ message: e.message }, :unprocessable_entity)
     end
 
+    rescue_from ExceptionHandler::OverRateLimit do |e|
+      json_response({ message: e.message }, :too_many_requests)
+    end
   end
 end
