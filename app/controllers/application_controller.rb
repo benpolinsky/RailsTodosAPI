@@ -15,6 +15,7 @@ class ApplicationController < ActionController::API
   end
 
   def ensure_user_below_rate_limit
+    return unless @current_user
     raise(ExceptionHandler::OverRateLimit, Message.over_rate_limit) if @current_user.over_rapid_request_limit?
 
     raise(ExceptionHandler::OverRateLimit, Message.over_rate_limit) if @current_user.over_read_request_limit?

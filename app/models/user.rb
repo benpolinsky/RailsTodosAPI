@@ -11,7 +11,7 @@ class User < ApplicationRecord
   # be moved to a "RequestThrottler" PORO/class
 
   def over_rapid_request_limit?
-    user_requests.where('created_at >= ?', DateTime.now - 1.second).size >= 3
+    user_requests.where('created_at > ?', DateTime.now - 1.second).size >= 3
   end
 
   def over_read_request_limit?

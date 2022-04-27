@@ -249,6 +249,7 @@ DEPENDENCIES
   spring
   spring-watcher-listen (~> 2.0.0)
   sqlite3 (~> 1.4)
+  timecop
   tzinfo-data
 
 RUBY VERSION
